@@ -4,6 +4,7 @@ abstract class Transaction implements Exportable {
     private double amount;
 
     Transaction(String d, String des, double a) {
+        //logic
         this.date = d;
         this.description = des;
         this.amount = a;
