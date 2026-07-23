@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TransactionManager {
-    private String filename = "UserTransaction.csv";
+    final private String filename = "UserTransaction.csv";
     private List<Transaction> transactions = new ArrayList<>();
 
     public void add(Transaction t) {
