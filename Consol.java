@@ -1,9 +1,15 @@
+import java.util.*;
+
 public class Consol{
     public static void main(String[] args) {
         TransactionManager tManager = new TransactionManager();
 
-        tManager.add(new Expense("7-23-2026", "ice cream", 90));
-        tManager.add(new Income("7-23-2026", "design submit", 1000));
-        tManager.exportToFile();
+        tManager.add(new Expense("24 tarikh", "Ice-cream-2", 90));
+        
+        List<Transaction> t = tManager.geTransactions();
+
+        for(Transaction a : t){
+            System.out.println(a.generateCSV());
+        }
     }
 }
