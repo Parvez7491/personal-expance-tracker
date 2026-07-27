@@ -4,14 +4,19 @@ import java.util.List;
 
 public class TransactionManager {
     final private String filename = "UserTransaction.csv";
-    private List<Transaction> transactions = new ArrayList<>();
+    public double balance;
+    public List<Transaction> transactions = new ArrayList<>();
 
     public TransactionManager() {
         this.loadFromCSV();
+        for(Transaction a : transactions){
+            balance += a.calculateImpact();
+        }
     }
 
     public void add(Transaction t) {
         transactions.add(t);
+        balance += t.calculateImpact();
         try (FileWriter writer = new FileWriter(this.filename, true)) {
             writer.write(t.generateCSV());
             writer.write(System.lineSeparator());
@@ -26,7 +31,7 @@ public class TransactionManager {
             String raw;
             while((raw = br.readLine()) != null){
                 String fetch[] = raw.split(",");
-                if (fetch[1] == "Expense") {
+                if (fetch[1].equals("Expense")) {
                     transactions.add(new Expense(fetch[0], fetch[2], Double.parseDouble(fetch[3])));
                 } else {
                     transactions.add(new Income(fetch[0], fetch[2], Double.parseDouble(fetch[3])));
@@ -36,10 +41,6 @@ public class TransactionManager {
         } catch (IOException e) {
             System.out.println("Failed to read: " + e.getMessage());
         }
-    }
-
-    public List<Transaction> geTransactions() {
-        return transactions;
     }
 
 }
