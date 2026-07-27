@@ -33,6 +33,7 @@ public class App_UI{
 
         //adding to main window
         window.add(main_panel);
+        window.setResizable(false);
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.setSize(450, 800);
         window.setLocationRelativeTo(null);
