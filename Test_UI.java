@@ -1,86 +1,117 @@
 import javax.swing.*;
 import java.awt.*;
+import javax.swing.border.*;
 
 public class Test_UI {
 
     public static void main(String[] args) {
-        JFrame frame = new JFrame("CardLayout Tutorial");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(400, 300);
-        frame.setLocationRelativeTo(null);
+        JFrame window = new JFrame("Welcome to RDS");
 
-        // -------------------------------------------------------------
-        // STEP 1: Create the CardLayout manager & Container Panel
-        // -------------------------------------------------------------
+        // 1. Initialize CardLayout and parent panel
         CardLayout cardLayout = new CardLayout();
         JPanel cardPanel = new JPanel(cardLayout);
 
-        // -------------------------------------------------------------
-        // STEP 2: Create individual screens (The "Cards")
-        // -------------------------------------------------------------
+        // 2. Add panels with unique String keys
+        cardPanel.add(signIN(cardLayout, cardPanel), "SIGN_IN");
+        cardPanel.add(signUP(cardLayout, cardPanel), "SIGN_UP");
+
+        window.add(cardPanel);
+        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        window.setSize(400, 450);
+        window.setLocationRelativeTo(null);
+        window.setVisible(true);
+    }
+
+    // --- SIGN UP PANEL ---
+    public static JPanel signUP(CardLayout cardLayout, JPanel cardPanel) {
+        JPanel main = new JPanel();
+        main.setLayout(new BoxLayout(main, BoxLayout.Y_AXIS));
+        main.setBorder(new EmptyBorder(30, 30, 30, 30));
+
+        JLabel header = new JLabel("Create Account");
+        header.setFont(new Font("SansSerif", Font.BOLD, 18));
+
+        JLabel lname = new JLabel("Enter your name");
+        JTextField tfname = new JTextField();
+        tfname.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
+
+        JLabel lpass = new JLabel("Set Password");
+        JPasswordField tfpass = new JPasswordField();
+        tfpass.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
+
+        JButton submitBtn = moderButton("Sign Up");
+
+        // Navigation Button to switch back to Sign In
+        JButton switchToSignInBtn = moderButton("Already have an account? Sign In");
+        switchToSignInBtn.addActionListener(e -> cardLayout.show(cardPanel, "SIGN_IN"));
+
+        // Add components with spacing
+        main.add(header);
+        main.add(Box.createRigidArea(new Dimension(0, 15)));
+        main.add(lname);
+        main.add(tfname);
+        main.add(Box.createRigidArea(new Dimension(0, 10)));
+        main.add(lpass);
+        main.add(tfpass);
+        main.add(Box.createRigidArea(new Dimension(0, 15)));
+        main.add(submitBtn);
+        main.add(Box.createRigidArea(new Dimension(0, 10)));
+        main.add(switchToSignInBtn);
+
+        return main;
+    }
+
+    // --- SIGN IN PANEL ---
+    public static JPanel signIN(CardLayout cardLayout, JPanel cardPanel) {
+        JPanel main = new JPanel();
+        main.setLayout(new BoxLayout(main, BoxLayout.Y_AXIS));
+        main.setBorder(new EmptyBorder(30, 30, 30, 30));
+
+        JLabel header = new JLabel("Sign In");
+        header.setFont(new Font("SansSerif", Font.BOLD, 18));
+
+        JLabel lname = new JLabel("Username");
+        JTextField tfname = new JTextField();
+        tfname.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
+
+        JLabel lpass = new JLabel("Password");
+        JPasswordField tfpass = new JPasswordField();
+        tfpass.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
+
+        JButton submitBtn = moderButton("Sign In");
+        submitBtn.setFont(Style.NORMAL(12));
         
-        // --- Screen 1: Red Page ---
-        JPanel redPage = new JPanel(new GridBagLayout());
-        redPage.setBackground(new Color(0xE74C3C));
-        JLabel redLabel = new JLabel("RED SCREEN (Page 1)");
-        redLabel.setForeground(Color.WHITE);
-        redLabel.setFont(new Font("SansSerif", Font.BOLD, 20));
-        redPage.add(redLabel);
 
-        // --- Screen 2: Blue Page ---
-        JPanel bluePage = new JPanel(new GridBagLayout());
-        bluePage.setBackground(new Color(0x3498DB));
-        JLabel blueLabel = new JLabel("BLUE SCREEN (Page 2)");
-        blueLabel.setForeground(Color.WHITE);
-        blueLabel.setFont(new Font("SansSerif", Font.BOLD, 20));
-        bluePage.add(blueLabel);
 
-        // --- Screen 3: Green Page ---
-        JPanel greenPage = new JPanel(new GridBagLayout());
-        greenPage.setBackground(new Color(0x2ECC71));
-        JLabel greenLabel = new JLabel("GREEN SCREEN (Page 3)");
-        greenLabel.setForeground(Color.WHITE);
-        greenLabel.setFont(new Font("SansSerif", Font.BOLD, 20));
-        greenPage.add(greenLabel);
+        // Navigation Button to switch to Sign Up
+        JButton switchToSignUpBtn = moderButton("Don't have an account? Sign Up");
+        switchToSignUpBtn.addActionListener(e -> cardLayout.show(cardPanel, "SIGN_UP"));
 
-        // -------------------------------------------------------------
-        // STEP 3: Add Cards to Container with Unique "String Keys"
-        // (Think of keys like Variant Names in Figma)
-        // -------------------------------------------------------------
-        cardPanel.add(redPage, "RED");
-        cardPanel.add(bluePage, "BLUE");
-        cardPanel.add(greenPage, "GREEN");
+        // Add components with spacing
+        main.add(header);
+        main.add(Box.createRigidArea(new Dimension(0, 15)));
+        main.add(lname);
+        main.add(tfname);
+        main.add(Box.createRigidArea(new Dimension(0, 10)));
+        main.add(lpass);
+        main.add(tfpass);
+        main.add(Box.createRigidArea(new Dimension(0, 15)));
+        main.add(submitBtn);
+        main.add(Box.createRigidArea(new Dimension(0, 10)));
+        main.add(switchToSignUpBtn);
 
-        // -------------------------------------------------------------
-        // STEP 4: Create Navigation Controls (Buttons)
-        // -------------------------------------------------------------
-        JPanel controlPanel = new JPanel();
+        return main;
+    }
 
-        JButton btnRed = new JButton("Red");
-        JButton btnBlue = new JButton("Blue");
-        JButton btnGreen = new JButton("Green");
-        JButton btnNext = new JButton("Next >");
-
-        // STEP 5: Switch screens using cardLayout.show() or cardLayout.next()
-        btnRed.addActionListener(e -> cardLayout.show(cardPanel, "RED"));
-        btnBlue.addActionListener(e -> cardLayout.show(cardPanel, "BLUE"));
-        btnGreen.addActionListener(e -> cardLayout.show(cardPanel, "GREEN"));
-        
-        // cardLayout also has built-in methods like next() and previous()
-        btnNext.addActionListener(e -> cardLayout.next(cardPanel));
-
-        controlPanel.add(btnRed);
-        controlPanel.add(btnBlue);
-        controlPanel.add(btnGreen);
-        controlPanel.add(btnNext);
-
-        // -------------------------------------------------------------
-        // STEP 6: Assemble Window
-        // -------------------------------------------------------------
-        frame.setLayout(new BorderLayout());
-        frame.add(cardPanel, BorderLayout.CENTER);   // Cards take main viewport
-        frame.add(controlPanel, BorderLayout.SOUTH); // Buttons pinned to bottom
-
-        frame.setVisible(true);
+    public static JButton moderButton(String s){
+        JButton btn = new JButton(s);
+        btn.setFocusPainted(false);                             
+        btn.setBackground(new Color(99, 102, 241));             
+        btn.setForeground(Color.WHITE);                         
+        btn.setOpaque(true);                                    
+        btn.setBorder(new EmptyBorder(10, 20, 10, 20));         
+        btn.setCursor(new Cursor(Cursor.HAND_CURSOR));           
+        btn.setFont(new Font("DialogInput", Font.BOLD, 14));
+        return btn;
     }
 }
