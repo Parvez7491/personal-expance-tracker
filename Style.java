@@ -16,4 +16,18 @@ public class Style{
     public static final Color GREEN = Color.decode("#44867C");
     public static final Color LIGHT_GREEN = Color.decode("#5E978E");
     public static final Color OFF_WHITE = Color.decode("#F2F2F2");
+
+    //buttons
+    public static JButton modernButton(String s){
+        JButton btn = new JButton(s);
+
+        btn.setFocusPainted(false);
+        btn.setContentAreaFilled(false);
+        btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+        btn.setPreferredSize(new Dimension(Integer.MAX_VALUE, 65));
+        btn.setFont(NORMAL(18));
+
+        return btn;
+    }
 }
