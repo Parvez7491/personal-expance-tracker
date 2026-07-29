@@ -77,15 +77,17 @@ public class TransactionManager {
 
 private void loadFromCSV() {
         File file = new File(filename);
-        if (!file.exists()) return;
-
+        if (!file.exists()) {
+            System.out.println("File Does not Exist");
+            return;
+        }
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String raw;
             while ((raw = br.readLine()) != null) {
                 if (raw.trim().isEmpty()) continue;
-                
+
                 String[] fetch = raw.split(",");
-                if (fetch.length >= 4) { 
+                if (fetch.length >= 4) {
                     String date = fetch[0];
                     String type = fetch[1];
                     String description = fetch[2].replace("\"", "");

@@ -13,7 +13,7 @@ abstract class Transaction implements Exportable {
 
     @Override
     public String generateCSV() {
-        return date + "," + getClass().getSimpleName() + ",\"" + description + "\"," + amount; // "basa vara, bua bill"
+        return date + "," + getClass().getSimpleName() + ",\"" + description + "\"," + amount; 
     }
 
     // getter
