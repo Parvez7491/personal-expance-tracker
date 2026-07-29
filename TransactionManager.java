@@ -44,9 +44,9 @@ public class TransactionManager {
             while ((raw = br.readLine()) != null) {
                 String fetch[] = raw.split(",");
                 if (fetch[1].equals("Expense")) {
-                    transactions.add(new Expense(fetch[0], fetch[2], Double.parseDouble(fetch[3])));
+                    transactions.add(new Expense(fetch[0], fetch[2].replace("\"", ""), Double.parseDouble(fetch[3])));
                 } else {
-                    transactions.add(new Income(fetch[0], fetch[2], Double.parseDouble(fetch[3])));
+                    transactions.add(new Income(fetch[0], fetch[2].replace("\"", ""), Double.parseDouble(fetch[3])));
                 }
             }
 
@@ -55,6 +55,8 @@ public class TransactionManager {
         }
     }
     
+
+
     
 
 }
