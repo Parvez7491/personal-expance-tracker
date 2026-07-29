@@ -88,8 +88,18 @@ public class AddTransactionPanel {
                 String desc = txtDesc.getText();
                 if (desc.isEmpty()) desc = "Unknown";
                 
-                String date = txtDate.getText();
+                String date = txtDate.getText().trim();
                 if (date.isEmpty()) date = LocalDate.now().toString();
+
+                try {
+                    LocalDate.parse(date); 
+                } catch (java.time.format.DateTimeParseException dtpe) {
+                    JOptionPane.showMessageDialog(mainPanel, 
+                        "Invalid Date! Please use YYYY-MM-DD format (e.g., " + LocalDate.now().toString() + ").", 
+                        "Date Error", 
+                        JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
 
                 Transaction t;
                 if (selectedType.equals("Expense")) {
@@ -105,7 +115,6 @@ public class AddTransactionPanel {
                 txtDate.setText(LocalDate.now().toString());
                 
                 App_UI.refreshUI();
-                
                 App_UI.switchToHome(); 
 
             } catch (NumberFormatException ex) {
