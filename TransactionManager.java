@@ -75,7 +75,7 @@ public class TransactionManager {
         balance = income - spent;
     }
 
-    private void loadFromCSV() {
+private void loadFromCSV() {
         File file = new File(filename);
         if (!file.exists()) {
             System.out.println("File Does not Exist");
