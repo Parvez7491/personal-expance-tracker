@@ -11,6 +11,51 @@ public class TransactionManager {
 
     public TransactionManager() {
         this.loadFromCSV();
+        this.recalculateTotals();
+    }
+
+    public void add(Transaction t) {
+        transactions.add(t);
+        updateTotalsWith(t);
+        
+        try (FileWriter writer = new FileWriter(this.filename, true)) {
+            writer.write(t.generateCSV());
+            writer.write(System.lineSeparator());
+        } catch (IOException e) {
+            System.out.println("Failed to export: " + e.getMessage());
+        }
+    }
+
+    public void edit(int index, Transaction updatedTransaction) {
+        if (index >= 0 && index < transactions.size()) {
+            transactions.set(index, updatedTransaction);
+            recalculateTotals();
+            rewriteCSV();
+        }
+    }
+
+    public void delete(int index) {
+        if (index >= 0 && index < transactions.size()) {
+            transactions.remove(index);
+            recalculateTotals();
+            rewriteCSV();
+        }
+    }
+
+    private void rewriteCSV() {
+        try (FileWriter writer = new FileWriter(this.filename, false)) {
+            for (Transaction t : transactions) {
+                writer.write(t.generateCSV());
+                writer.write(System.lineSeparator());
+            }
+        } catch (IOException e) {
+            System.out.println("Failed to rewrite CSV: " + e.getMessage());
+        }
+    }
+
+    private void recalculateTotals() {
+        income = 0;
+        spent = 0;
         for (Transaction a : transactions) {
             if (a.calculateImpact() < 0) {
                 spent += -a.calculateImpact();
@@ -21,42 +66,42 @@ public class TransactionManager {
         balance = income - spent;
     }
 
-    public void add(Transaction t) {
-        transactions.add(t);
+    private void updateTotalsWith(Transaction t) {
         if (t.calculateImpact() < 0) {
             spent += -t.calculateImpact();
         } else {
             income += t.calculateImpact();
         }
         balance = income - spent;
-        try (FileWriter writer = new FileWriter(this.filename, true)) {
-            writer.write(t.generateCSV());
-            writer.write(System.lineSeparator());
-        } catch (IOException e) {
-            System.out.println("Failed to export: " + e.getMessage());
-        }
-
     }
 
     private void loadFromCSV() {
-        try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
+        File file = new File(filename);
+        if (!file.exists()) {
+            System.out.println("File Does not Exist");
+            return;
+        }
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String raw;
             while ((raw = br.readLine()) != null) {
-                String fetch[] = raw.split(",");
-                if (fetch[1].equals("Expense")) {
-                    transactions.add(new Expense(fetch[0], fetch[2].replace("\"", ""), Double.parseDouble(fetch[3])));
-                } else {
-                    transactions.add(new Income(fetch[0], fetch[2].replace("\"", ""), Double.parseDouble(fetch[3])));
+                if (raw.trim().isEmpty()) continue;
+
+                String[] fetch = raw.split(",");
+                if (fetch.length >= 4) {
+                    String date = fetch[0];
+                    String type = fetch[1];
+                    String description = fetch[2].replace("\"", "");
+                    double amount = Double.parseDouble(fetch[3]);
+
+                    if (type.equals("Expense")) {
+                        transactions.add(new Expense(date, description, amount));
+                    } else {
+                        transactions.add(new Income(date, description, amount));
+                    }
                 }
             }
-
-        } catch (IOException e) {
+        } catch (IOException | NumberFormatException e) {
             System.out.println("Failed to read: " + e.getMessage());
         }
     }
-    
-
-
-    
-
 }
