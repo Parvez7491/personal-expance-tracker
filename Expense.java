@@ -1,6 +1,6 @@
 public class Expense extends Transaction {
-    public Expense(String d, String cat, String des, double a) {
-        super(d, cat, des, a);
+    public Expense(String d, String des, double a) {
+        super(d, des, a);
     }
 
     public double calculateImpact() {

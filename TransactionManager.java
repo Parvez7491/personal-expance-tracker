@@ -41,7 +41,7 @@ public class TransactionManager {
             rewriteCSV();
         }
     }
-    
+
     private void rewriteCSV() {
         try (FileWriter writer = new FileWriter(this.filename, false)) {
             for (Transaction t : transactions) {
@@ -93,9 +93,9 @@ public class TransactionManager {
                     double amount = Double.parseDouble(fetch[4]);
 
                     if (type.equals("Expense")) {
-                        transactions.add(new Expense(date, category, description, amount));
+                        transactions.add(new Expense(date, description, amount));
                     } else {
-                        transactions.add(new Income(date, category, description, amount));
+                        transactions.add(new Income(date, description, amount));
                     }
                 }
             }
