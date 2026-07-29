@@ -16,6 +16,9 @@ public class Style{
     public static final Color GREEN = Color.decode("#44867C");
     public static final Color LIGHT_GREEN = Color.decode("#5E978E");
     public static final Color OFF_WHITE = Color.decode("#F2F2F2");
+    public static final Color INCOME_GREEN = Color.decode("#55AC68");
+    public static final Color EXPENSE_RED = Color.decode("#D65846");
+
 
     //buttons
     public static JButton modernButton(String s){
