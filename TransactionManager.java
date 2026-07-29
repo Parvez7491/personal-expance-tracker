@@ -77,20 +77,21 @@ public class TransactionManager {
 
     private void loadFromCSV() {
         File file = new File(filename);
-        if (!file.exists()) return;
-
+        if (!file.exists()) {
+            System.out.println("File Does not Exist");
+            return;
+        }
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String raw;
             while ((raw = br.readLine()) != null) {
                 if (raw.trim().isEmpty()) continue;
-                
+
                 String[] fetch = raw.split(",");
-                if (fetch.length >= 5) {
+                if (fetch.length >= 4) {
                     String date = fetch[0];
                     String type = fetch[1];
-                    String category = fetch[2];
-                    String description = fetch[3].replace("\"", "");
-                    double amount = Double.parseDouble(fetch[4]);
+                    String description = fetch[2].replace("\"", "");
+                    double amount = Double.parseDouble(fetch[3]);
 
                     if (type.equals("Expense")) {
                         transactions.add(new Expense(date, description, amount));
