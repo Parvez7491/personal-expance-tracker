@@ -16,7 +16,6 @@ public class App_UI {
         JFrame window = new JFrame("Expense Tracker");
         window.setLayout(new BorderLayout());
 
-        // টেম্পোরারি লাল প্যানেল সরিয়ে নতুনগুলো যুক্ত করা হলো
         cardPanel.add(homePanel(), "HOME");
         cardPanel.add(AddTransactionPanel.getPanel(cardLayout, cardPanel), "ADD_TX");
 
