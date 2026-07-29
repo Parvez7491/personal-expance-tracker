@@ -8,6 +8,7 @@ abstract class Transaction implements Exportable {
         this.date = d;
         this.description = des;
         this.amount = a;
+
     }
 
     @Override
