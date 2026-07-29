@@ -9,22 +9,17 @@ public class App_UI {
 
     public static TransactionManager tManager = new TransactionManager();
 
+    public static CardLayout cardLayout = new CardLayout();
+    public static JPanel cardPanel = new JPanel(cardLayout);
+
     public static void main(String[] args) {
         JFrame window = new JFrame("Expense Tracker");
         window.setLayout(new BorderLayout());
 
-        CardLayout cardLayout = new CardLayout();
-        JPanel cardPanel = new JPanel(cardLayout);
-
-        JPanel temp = new JPanel();
-        temp.setBackground(Color.red);
-
+        // টেম্পোরারি লাল প্যানেল সরিয়ে নতুনগুলো যুক্ত করা হলো
         cardPanel.add(homePanel(), "HOME");
-        cardPanel.add(temp, "RED");
+        cardPanel.add(AddTransactionPanel.getPanel(cardLayout, cardPanel), "ADD_TX");
 
-        // buttons
-
-        // adding to main window
         window.add(cardPanel, BorderLayout.CENTER);
         window.add(navbar(cardLayout, cardPanel), BorderLayout.SOUTH);
         window.setResizable(false);
@@ -32,6 +27,14 @@ public class App_UI {
         window.setSize(450, 800);
         window.setLocationRelativeTo(null);
         window.setVisible(true);
+    }
+
+    public static void refreshUI() {
+        cardPanel.removeAll();
+        cardPanel.add(homePanel(), "HOME");
+        cardPanel.add(AddTransactionPanel.getPanel(cardLayout, cardPanel), "ADD_TX");
+        cardPanel.revalidate();
+        cardPanel.repaint();
     }
 
     public static JPanel navbar(CardLayout cl, JPanel cp) {
@@ -76,7 +79,7 @@ public class App_UI {
             about.setOpaque(true);
             about.setForeground(Color.black);
 
-            cl.show(cp, "RED");
+            cl.show(cp, "ADD_TX");
         });
         about.addActionListener(e -> {
             about.setBackground(Style.GREEN);
