@@ -23,7 +23,7 @@ public class AddTransactionPanel {
 
         JButton btnExpense = new JButton("Expense");
         JButton btnIncome = new JButton("Income");
-
+        
         styleToggleButton(btnExpense, true);
         styleToggleButton(btnIncome, false);
 
