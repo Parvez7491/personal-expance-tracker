@@ -1,8 +1,5 @@
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
-
 import java.awt.*;
 
 public class App_UI {
@@ -11,6 +8,8 @@ public class App_UI {
 
     public static CardLayout cardLayout = new CardLayout();
     public static JPanel cardPanel = new JPanel(cardLayout);
+
+    public static JButton btnNavHome, btnNavAdd, btnNavAbout;
 
     public static void main(String[] args) {
         JFrame window = new JFrame("Expense Tracker");
@@ -35,67 +34,69 @@ public class App_UI {
         cardPanel.revalidate();
         cardPanel.repaint();
     }
+    public static void switchToHome() {
+        cardLayout.show(cardPanel, "HOME");
+        
+        btnNavHome.setBackground(Style.GREEN);
+        btnNavHome.setForeground(Color.white);
+        
+        btnNavAdd.setBackground(Color.white);
+        btnNavAdd.setForeground(Color.black);
+        
+        btnNavAbout.setBackground(Color.white);
+        btnNavAbout.setForeground(Color.black);
+    }
 
     public static JPanel navbar(CardLayout cl, JPanel cp) {
         JPanel navbar = new JPanel(new GridLayout(1, 0));
 
-        JButton home = Style.modernButton("Home");
-        home.setBackground(Style.GREEN);
-        home.setOpaque(true);
-        home.setForeground(Color.white);
-        JButton add = Style.modernButton("Add");
-        JButton about = Style.modernButton("About");
+        btnNavHome = Style.modernButton("Home");
+        btnNavHome.setBackground(Style.GREEN);
+        btnNavHome.setOpaque(true);
+        btnNavHome.setForeground(Color.white);
+        
+        btnNavAdd = Style.modernButton("Add");
+        btnNavAbout = Style.modernButton("About");
 
-        navbar.add(home);
-        navbar.add(add);
-        navbar.add(about);
+        navbar.add(btnNavHome);
+        navbar.add(btnNavAdd);
+        navbar.add(btnNavAbout);
 
-        home.addActionListener(e -> {
-            home.setBackground(Style.GREEN);
-            home.setOpaque(true);
-            home.setForeground(Color.white);
-
-            add.setBackground(Color.white);
-            add.setOpaque(true);
-            add.setForeground(Color.black);
-
-            about.setBackground(Color.white);
-            about.setOpaque(true);
-            about.setForeground(Color.black);
-
-            cl.show(cp, "HOME");
+        btnNavHome.addActionListener(e -> {
+            switchToHome();
         });
-        add.addActionListener(e -> {
-            add.setBackground(Style.GREEN);
-            add.setOpaque(true);
-            add.setForeground(Color.white);
+        
+        btnNavAdd.addActionListener(e -> {
+            btnNavAdd.setBackground(Style.GREEN);
+            btnNavAdd.setOpaque(true);
+            btnNavAdd.setForeground(Color.white);
 
-            home.setBackground(Color.white);
-            home.setOpaque(true);
-            home.setForeground(Color.black);
+            btnNavHome.setBackground(Color.white);
+            btnNavHome.setOpaque(true);
+            btnNavHome.setForeground(Color.black);
 
-            about.setBackground(Color.white);
-            about.setOpaque(true);
-            about.setForeground(Color.black);
+            btnNavAbout.setBackground(Color.white);
+            btnNavAbout.setOpaque(true);
+            btnNavAbout.setForeground(Color.black);
 
             cl.show(cp, "ADD_TX");
         });
-        about.addActionListener(e -> {
-            about.setBackground(Style.GREEN);
-            about.setOpaque(true);
-            about.setForeground(Color.white);
+        
+        btnNavAbout.addActionListener(e -> {
+            btnNavAbout.setBackground(Style.GREEN);
+            btnNavAbout.setOpaque(true);
+            btnNavAbout.setForeground(Color.white);
 
-            home.setBackground(Color.white);
-            home.setOpaque(true);
-            home.setForeground(Color.black);
+            btnNavHome.setBackground(Color.white);
+            btnNavHome.setOpaque(true);
+            btnNavHome.setForeground(Color.black);
 
-            add.setBackground(Color.white);
-            add.setOpaque(true);
-            add.setForeground(Color.black);
+            btnNavAdd.setBackground(Color.white);
+            btnNavAdd.setOpaque(true);
+            btnNavAdd.setForeground(Color.black);
         });
 
         return navbar;
-
     }
 
     public static JPanel homePanel() {
@@ -113,7 +114,6 @@ public class App_UI {
         JLabel text_recent = new JLabel("Recent Transactions");
         text_recent.setFont(Style.NORMAL(24));
 
-        // adding to main panel
         main_panel.add(greeting);
         main_panel.add(balanceSection());
         main_panel.add(temp);
@@ -130,22 +130,18 @@ public class App_UI {
         main_panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 290));
         main_panel.setBackground(Style.GREEN);
 
-        // Total_Balance
         JLabel tb = new JLabel("TOTAL BALANCE");
         tb.setFont(Style.NORMAL(13));
         tb.setForeground(Color.white);
 
-        // Balance
         JLabel balance = new JLabel(String.format("%.2f", tManager.balance));
         balance.setFont(Style.BOLD(64));
         balance.setForeground(Color.white);
 
-        // Month name
         JLabel month_name = new JLabel("July 2026");
         month_name.setFont(Style.NORMAL(13));
         month_name.setForeground(Color.white);
 
-        // income and spent
         JPanel statis = new JPanel();
         statis.setLayout(new BoxLayout(statis, BoxLayout.X_AXIS));
         statis.setMaximumSize(new Dimension(Integer.MAX_VALUE, 98));
@@ -158,7 +154,6 @@ public class App_UI {
         statis.add(temp);
         statis.add(iAnde("Spent", tManager.spent));
 
-        // add to main panel
         main_panel.add(tb);
         main_panel.add(balance);
         main_panel.add(month_name);
@@ -195,7 +190,7 @@ public class App_UI {
         JPanel[] transactions = new JPanel[total_trans];
 
         for (int i = 0; i < total_trans; i++) {
-            transactions[i] = transactionCard(tManager.transactions.get(i));
+            transactions[i] = transactionCard(tManager.transactions.get(i), i);
         }
 
         for (int i = 0; i < total_trans; i++) {
@@ -212,12 +207,13 @@ public class App_UI {
         return scrollPane;
     }
 
-    public static JPanel transactionCard(Transaction t) {
+    public static JPanel transactionCard(Transaction t, int index) {
         JPanel main = new JPanel();
         main.setLayout(new BoxLayout(main, BoxLayout.X_AXIS));
         main.setBorder(new EmptyBorder(10, 20, 10, 20));
+        
+        main.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-        // des and date
         JPanel date_des = new JPanel();
         date_des.setLayout(new BoxLayout(date_des, BoxLayout.Y_AXIS));
         
@@ -233,7 +229,6 @@ public class App_UI {
         
         date_des.setOpaque(false);
         
-        // amount
         JLabel amount = new JLabel(String.format("%.2f", t.getAmount()));
         amount.setFont(Style.NORMAL(20));
         amount.setForeground(Color.white);
@@ -250,7 +245,6 @@ public class App_UI {
             main.setBackground(Style.EXPENSE_RED);
             main.setOpaque(true);
         }
-
 
         return main;
     }
