@@ -18,6 +18,7 @@ public class Style{
     public static final Color OFF_WHITE = Color.decode("#F2F2F2");
     public static final Color INCOME_GREEN = Color.decode("#55AC68");
     public static final Color EXPENSE_RED = Color.decode("#D65846");
+    public static final Color FIELD_COLOR = new Color(194, 217, 210);
 
 
     //buttons
@@ -26,6 +27,7 @@ public class Style{
 
         btn.setFocusPainted(false);
         btn.setContentAreaFilled(false);
+        btn.setOpaque(true);
         btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
         btn.setPreferredSize(new Dimension(Integer.MAX_VALUE, 65));

@@ -1,6 +1,12 @@
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
+
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.time.*;
+import java.util.ArrayList;
 
 public class App_UI {
 
@@ -8,7 +14,7 @@ public class App_UI {
 
     public static CardLayout cardLayout = new CardLayout();
     public static JPanel cardPanel = new JPanel(cardLayout);
-
+    static EditTransactions_UI editor = new EditTransactions_UI();
     public static JButton btnNavHome, btnNavAdd, btnNavAbout;
 
     public static void main(String[] args) {
@@ -17,6 +23,7 @@ public class App_UI {
 
         cardPanel.add(homePanel(), "HOME");
         cardPanel.add(AddTransactionPanel.getPanel(cardLayout, cardPanel), "ADD_TX");
+        cardPanel.add(editor.getUI(cardLayout, cardPanel), "Edit");
 
         window.add(cardPanel, BorderLayout.CENTER);
         window.add(navbar(cardLayout, cardPanel), BorderLayout.SOUTH);
@@ -31,18 +38,20 @@ public class App_UI {
         cardPanel.removeAll();
         cardPanel.add(homePanel(), "HOME");
         cardPanel.add(AddTransactionPanel.getPanel(cardLayout, cardPanel), "ADD_TX");
+        cardPanel.add(editor.getUI(cardLayout, cardPanel), "Edit");
         cardPanel.revalidate();
         cardPanel.repaint();
     }
+
     public static void switchToHome() {
         cardLayout.show(cardPanel, "HOME");
-        
+
         btnNavHome.setBackground(Style.GREEN);
         btnNavHome.setForeground(Color.white);
-        
+
         btnNavAdd.setBackground(Color.white);
         btnNavAdd.setForeground(Color.black);
-        
+
         btnNavAbout.setBackground(Color.white);
         btnNavAbout.setForeground(Color.black);
     }
@@ -54,7 +63,7 @@ public class App_UI {
         btnNavHome.setBackground(Style.GREEN);
         btnNavHome.setOpaque(true);
         btnNavHome.setForeground(Color.white);
-        
+
         btnNavAdd = Style.modernButton("Add");
         btnNavAbout = Style.modernButton("About");
 
@@ -65,7 +74,7 @@ public class App_UI {
         btnNavHome.addActionListener(e -> {
             switchToHome();
         });
-        
+
         btnNavAdd.addActionListener(e -> {
             btnNavAdd.setBackground(Style.GREEN);
             btnNavAdd.setOpaque(true);
@@ -81,7 +90,7 @@ public class App_UI {
 
             cl.show(cp, "ADD_TX");
         });
-        
+
         btnNavAbout.addActionListener(e -> {
             btnNavAbout.setBackground(Style.GREEN);
             btnNavAbout.setOpaque(true);
@@ -104,19 +113,16 @@ public class App_UI {
         main_panel.setBorder(new EmptyBorder(30, 20, 0, 20));
         main_panel.setLayout(new BoxLayout(main_panel, BoxLayout.Y_AXIS));
 
-        JLabel greeting = new JLabel("GOOD MORNING");
+        JLabel greeting = new JLabel(getGreeting());
         greeting.setFont(Style.BOLD(24));
 
-        JLabel temp = new JLabel("TEMP");
-        temp.setForeground(new Color(1, 1, 1, 0));
-        temp.setFont(Style.NORMAL(26));
 
         JLabel text_recent = new JLabel("Recent Transactions");
         text_recent.setFont(Style.NORMAL(24));
 
         main_panel.add(greeting);
         main_panel.add(balanceSection());
-        main_panel.add(temp);
+        main_panel.add(Box.createVerticalStrut(15));
         main_panel.add(text_recent);
         main_panel.add(recentTransactions());
 
@@ -138,7 +144,7 @@ public class App_UI {
         balance.setFont(Style.BOLD(64));
         balance.setForeground(Color.white);
 
-        JLabel month_name = new JLabel("July 2026");
+        JLabel month_name = new JLabel(LocalDate.now().getMonth().toString() +" "+ LocalDate.now().getYear());
         month_name.setFont(Style.NORMAL(13));
         month_name.setForeground(Color.white);
 
@@ -185,20 +191,24 @@ public class App_UI {
 
     public static JScrollPane recentTransactions() {
         JPanel main = new JPanel();
-        main.setLayout(new GridLayout(0, 1, 0, 10));
-        int total_trans = tManager.transactions.size();
-        JPanel[] transactions = new JPanel[total_trans];
+        main.setLayout(new BoxLayout(main, BoxLayout.Y_AXIS));
 
-        for (int i = 0; i < total_trans; i++) {
-            transactions[i] = transactionCard(tManager.transactions.get(i), i);
+        ArrayList<Card_UI> card_ui = new ArrayList<>();
+
+        int i = 0;
+        for (Transaction a : tManager.transactions) {
+            Card_UI c_ui = new Card_UI(a, i);
+            card_ui.add(c_ui);
+            i++;
         }
 
-        for (int i = 0; i < total_trans; i++) {
-            main.add(transactions[i]);
+        for (Card_UI c : card_ui) {
+            main.add(c.getUI(cardLayout, cardPanel, editor));
+            main.add(Box.createVerticalStrut(15));
         }
 
         JScrollPane scrollPane = new JScrollPane(main);
-        
+
         scrollPane.setBorder(null);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
@@ -207,45 +217,16 @@ public class App_UI {
         return scrollPane;
     }
 
-    public static JPanel transactionCard(Transaction t, int index) {
-        JPanel main = new JPanel();
-        main.setLayout(new BoxLayout(main, BoxLayout.X_AXIS));
-        main.setBorder(new EmptyBorder(10, 20, 10, 20));
-        
-        main.setCursor(new Cursor(Cursor.HAND_CURSOR));
+    public static String getGreeting() {
+    int hour = LocalTime.now().getHour();
 
-        JPanel date_des = new JPanel();
-        date_des.setLayout(new BoxLayout(date_des, BoxLayout.Y_AXIS));
-        
-        JLabel date = new JLabel(t.getDate());
-        date.setFont(Style.NORMAL(12));
-        date.setForeground(Color.white);
-        JLabel des = new JLabel(t.getDes());
-        des.setFont(Style.NORMAL(18));
-        des.setForeground(Color.white);
-        
-        date_des.add(des);
-        date_des.add(date);
-        
-        date_des.setOpaque(false);
-        
-        JLabel amount = new JLabel(String.format("%.2f", t.getAmount()));
-        amount.setFont(Style.NORMAL(20));
-        amount.setForeground(Color.white);
-        amount.setOpaque(false);
-
-        main.add(date_des);
-        main.add(Box.createHorizontalGlue());
-        main.add(amount);
-
-        if (t.getClass().getSimpleName().equals("Income")) {
-            main.setBackground(Style.INCOME_GREEN);
-            main.setOpaque(true);
-        } else {
-            main.setBackground(Style.EXPENSE_RED);
-            main.setOpaque(true);
-        }
-
-        return main;
+    if (hour >= 5 && hour < 12) {
+        return "GOOD MORNING";
+    } else if (hour >= 12 && hour < 17) {
+        return "GOOD AFTERNOON";
+    } else {
+        return "GOOD EVENING";
     }
+}
+
 }
