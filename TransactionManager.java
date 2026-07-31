@@ -17,7 +17,7 @@ public class TransactionManager {
     public void add(Transaction t) {
         transactions.add(t);
         updateTotalsWith(t);
-        
+
         try (FileWriter writer = new FileWriter(this.filename, true)) {
             writer.write(t.generateCSV());
             writer.write(System.lineSeparator());
@@ -75,7 +75,7 @@ public class TransactionManager {
         balance = income - spent;
     }
 
-private void loadFromCSV() {
+    private void loadFromCSV() {
         File file = new File(filename);
         if (!file.exists()) {
             System.out.println("File Does not Exist");
@@ -84,9 +84,10 @@ private void loadFromCSV() {
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String raw;
             while ((raw = br.readLine()) != null) {
-                if (raw.trim().isEmpty()) continue;
+                if (raw.trim().isEmpty())
+                    continue;
 
-                String[] fetch = raw.split(",");
+                String[] fetch = parseCSVLine(raw);
                 if (fetch.length >= 4) {
                     String date = fetch[0];
                     String type = fetch[1];
@@ -103,5 +104,29 @@ private void loadFromCSV() {
         } catch (IOException | NumberFormatException e) {
             System.out.println("Failed to read: " + e.getMessage());
         }
+    }
+
+    private String[] parseCSVLine(String line) {
+
+        List<String> fields = new ArrayList<>();
+        StringBuilder current = new StringBuilder();
+
+        boolean inQuotes = false;
+
+        for (char c : line.toCharArray()) {
+
+            if (c == '"') {
+                inQuotes = !inQuotes;
+            } else if (c == ',' && !inQuotes) {
+                fields.add(current.toString());
+                current.setLength(0);
+            } else {
+                current.append(c);
+            }
+        }
+
+        fields.add(current.toString());
+
+        return fields.toArray(new String[0]);
     }
 }
