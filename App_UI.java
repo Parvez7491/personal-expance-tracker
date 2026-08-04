@@ -1,29 +1,44 @@
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
-
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.time.*;
-import java.util.ArrayList;
+import java.time.LocalTime; // সময়ের জন্য নতুন ইম্পোর্ট
 
 public class App_UI {
 
-    public static TransactionManager tManager = new TransactionManager();
+    public static TransactionManager tManager;
+    
+    // বর্তমান ইউজারের ডেটা সংরক্ষণের জন্য ভেরিয়েবল
+    public static String loggedInUsername = "";
+    public static String loggedInFullName = "";
 
-    public static CardLayout cardLayout = new CardLayout();
-    public static JPanel cardPanel = new JPanel(cardLayout);
-    static EditTransactions_UI editor = new EditTransactions_UI();
+    public static CardLayout cardLayout;
+    public static JPanel cardPanel;
+    public static JFrame window;
+
     public static JButton btnNavHome, btnNavAdd, btnNavAbout;
 
+    // মেইন মেথডটি এখন ব্যাকআপ হিসেবে কাজ করবে। 
+    // Auth_UI থেকে লগিন হলে startApp() মেথডটি কল হবে।
     public static void main(String[] args) {
-        JFrame window = new JFrame("Expense Tracker");
+        startApp("guest", "Guest User");
+    }
+
+    // এই মেথডটি Auth_UI থেকে কল করা হবে
+    public static void startApp(String username, String fullName) {
+        loggedInUsername = username;
+        loggedInFullName = fullName;
+        
+        // ইউজারের নিজস্ব ডেটাবেস (CSV) লোড হবে
+        tManager = new TransactionManager(username);
+
+        cardLayout = new CardLayout();
+        cardPanel = new JPanel(cardLayout);
+
+        window = new JFrame("Expense Tracker - " + fullName);
         window.setLayout(new BorderLayout());
 
         cardPanel.add(homePanel(), "HOME");
         cardPanel.add(AddTransactionPanel.getPanel(cardLayout, cardPanel), "ADD_TX");
-        cardPanel.add(editor.getUI(cardLayout, cardPanel), "Edit");
         cardPanel.add(About_UI.getPanel(), "ABOUT");
 
         window.add(cardPanel, BorderLayout.CENTER);
@@ -33,14 +48,12 @@ public class App_UI {
         window.setSize(450, 800);
         window.setLocationRelativeTo(null);
         window.setVisible(true);
-        
     }
 
     public static void refreshUI() {
         cardPanel.removeAll();
         cardPanel.add(homePanel(), "HOME");
         cardPanel.add(AddTransactionPanel.getPanel(cardLayout, cardPanel), "ADD_TX");
-        cardPanel.add(editor.getUI(cardLayout, cardPanel), "Edit");
         cardPanel.add(About_UI.getPanel(), "ABOUT");
         cardPanel.revalidate();
         cardPanel.repaint();
@@ -48,13 +61,13 @@ public class App_UI {
 
     public static void switchToHome() {
         cardLayout.show(cardPanel, "HOME");
-
+        
         btnNavHome.setBackground(Style.GREEN);
         btnNavHome.setForeground(Color.white);
-
+        
         btnNavAdd.setBackground(Color.white);
         btnNavAdd.setForeground(Color.black);
-
+        
         btnNavAbout.setBackground(Color.white);
         btnNavAbout.setForeground(Color.black);
     }
@@ -66,7 +79,7 @@ public class App_UI {
         btnNavHome.setBackground(Style.GREEN);
         btnNavHome.setOpaque(true);
         btnNavHome.setForeground(Color.white);
-
+        
         btnNavAdd = Style.modernButton("Add");
         btnNavAbout = Style.modernButton("About");
 
@@ -74,10 +87,8 @@ public class App_UI {
         navbar.add(btnNavAdd);
         navbar.add(btnNavAbout);
 
-        btnNavHome.addActionListener(e -> {
-            switchToHome();
-        });
-
+        btnNavHome.addActionListener(e -> switchToHome());
+        
         btnNavAdd.addActionListener(e -> {
             btnNavAdd.setBackground(Style.GREEN);
             btnNavAdd.setOpaque(true);
@@ -92,9 +103,8 @@ public class App_UI {
             btnNavAbout.setForeground(Color.black);
 
             cl.show(cp, "ADD_TX");
-
         });
-
+        
         btnNavAbout.addActionListener(e -> {
             btnNavAbout.setBackground(Style.GREEN);
             btnNavAbout.setOpaque(true);
@@ -107,10 +117,8 @@ public class App_UI {
             btnNavAdd.setBackground(Color.white);
             btnNavAdd.setOpaque(true);
             btnNavAdd.setForeground(Color.black);
-            
+
             cl.show(cp, "ABOUT");
-
-
         });
 
         return navbar;
@@ -121,16 +129,61 @@ public class App_UI {
         main_panel.setBorder(new EmptyBorder(30, 20, 0, 20));
         main_panel.setLayout(new BoxLayout(main_panel, BoxLayout.Y_AXIS));
 
-        JLabel greeting = new JLabel(getGreeting());
-        greeting.setFont(Style.BOLD(24));
+        // --- NEW HEADER PANEL (Greeting & Log Out) ---
+        JPanel headerPanel = new JPanel(new BorderLayout());
+        headerPanel.setOpaque(false);
+        headerPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 60));
+        headerPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
+        JPanel textPanel = new JPanel();
+        textPanel.setLayout(new BoxLayout(textPanel, BoxLayout.Y_AXIS));
+        textPanel.setOpaque(false);
+
+        // Dynamic Time Logic
+        int hour = LocalTime.now().getHour();
+        String greetingText = "GOOD MORNING";
+        if (hour >= 12 && hour < 18) {
+            greetingText = "GOOD AFTERNOON";
+        } else if (hour >= 18) {
+            greetingText = "GOOD EVENING";
+        }
+
+        JLabel greeting = new JLabel(greetingText);
+        greeting.setFont(Style.BOLD(20));
+        
+        JLabel nameLabel = new JLabel(loggedInFullName);
+        nameLabel.setFont(Style.NORMAL(16));
+        nameLabel.setForeground(Color.DARK_GRAY);
+
+        textPanel.add(greeting);
+        textPanel.add(nameLabel);
+
+        // Logout Button
+        JButton btnLogout = new JButton("Log Out");
+        btnLogout.setBackground(Style.EXPENSE_RED);
+        btnLogout.setForeground(Color.WHITE);
+        btnLogout.setFont(Style.NORMAL(12));
+        btnLogout.setFocusPainted(false);
+        btnLogout.setBorder(new EmptyBorder(5, 15, 5, 15));
+        btnLogout.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        
+        // Log out action
+        btnLogout.addActionListener(e -> {
+            window.dispose(); // Close current App UI
+            Auth_UI.main(new String[]{}); // Open Login UI
+        });
+
+        headerPanel.add(textPanel, BorderLayout.WEST);
+        headerPanel.add(btnLogout, BorderLayout.EAST);
+        // ----------------------------------------------
 
         JLabel text_recent = new JLabel("Recent Transactions");
         text_recent.setFont(Style.NORMAL(24));
 
-        main_panel.add(greeting);
+        main_panel.add(headerPanel);
+        main_panel.add(Box.createRigidArea(new Dimension(0, 20))); // Spacing
         main_panel.add(balanceSection());
-        main_panel.add(Box.createVerticalStrut(15));
+        main_panel.add(Box.createRigidArea(new Dimension(0, 20))); // Spacing
         main_panel.add(text_recent);
         main_panel.add(recentTransactions());
 
@@ -152,7 +205,7 @@ public class App_UI {
         balance.setFont(Style.BOLD(64));
         balance.setForeground(Color.white);
 
-        JLabel month_name = new JLabel(LocalDate.now().getMonth().toString() +" "+ LocalDate.now().getYear());
+        JLabel month_name = new JLabel("July 2026");
         month_name.setFont(Style.NORMAL(13));
         month_name.setForeground(Color.white);
 
@@ -199,24 +252,20 @@ public class App_UI {
 
     public static JScrollPane recentTransactions() {
         JPanel main = new JPanel();
-        main.setLayout(new BoxLayout(main, BoxLayout.Y_AXIS));
+        main.setLayout(new GridLayout(0, 1, 0, 10));
+        int total_trans = tManager.transactions.size();
+        JPanel[] transactions = new JPanel[total_trans];
 
-        ArrayList<Card_UI> card_ui = new ArrayList<>();
-
-        int i = 0;
-        for (Transaction a : tManager.transactions) {
-            Card_UI c_ui = new Card_UI(a, i);
-            card_ui.add(c_ui);
-            i++;
+        for (int i = 0; i < total_trans; i++) {
+            transactions[i] = transactionCard(tManager.transactions.get(i), i);
         }
 
-        for (Card_UI c : card_ui) {
-            main.add(c.getUI(cardLayout, cardPanel, editor));
-            main.add(Box.createVerticalStrut(15));
+        for (int i = 0; i < total_trans; i++) {
+            main.add(transactions[i]);
         }
 
         JScrollPane scrollPane = new JScrollPane(main);
-
+        
         scrollPane.setBorder(null);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
@@ -225,16 +274,58 @@ public class App_UI {
         return scrollPane;
     }
 
-    public static String getGreeting() {
-    int hour = LocalTime.now().getHour();
+    public static JPanel transactionCard(Transaction t, int index) {
+        JPanel main = new JPanel();
+        main.setLayout(new BoxLayout(main, BoxLayout.X_AXIS));
+        main.setBorder(new EmptyBorder(10, 20, 10, 20));
+        
+        main.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        
+        main.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                
+                EditTransactions_UI editUI = new EditTransactions_UI();
+                
+                editUI.loadTransaction(t, index); 
+                
+                cardPanel.add(editUI.getUI(cardLayout, cardPanel), "EDIT_TX");
+                cardLayout.show(cardPanel, "EDIT_TX");
+            }
+        });
 
-    if (hour >= 5 && hour < 12) {
-        return "GOOD MORNING";
-    } else if (hour >= 12 && hour < 17) {
-        return "GOOD AFTERNOON";
-    } else {
-        return "GOOD EVENING";
+        JPanel date_des = new JPanel();
+        date_des.setLayout(new BoxLayout(date_des, BoxLayout.Y_AXIS));
+        
+        JLabel date = new JLabel(t.getDate());
+        date.setFont(Style.NORMAL(12));
+        date.setForeground(Color.white);
+        JLabel des = new JLabel(t.getDes());
+        des.setFont(Style.NORMAL(18));
+        des.setForeground(Color.white);
+        
+        date_des.add(des);
+        date_des.add(date);
+        
+        date_des.setOpaque(false);
+        
+        JLabel amount = new JLabel(String.format("%.2f", t.getAmount()));
+        amount.setFont(Style.NORMAL(20));
+        amount.setForeground(Color.white);
+        amount.setOpaque(false);
+
+        main.add(date_des);
+        main.add(Box.createHorizontalGlue());
+        main.add(amount);
+
+        if (t.getClass().getSimpleName().equals("Income")) {
+            main.setBackground(Style.INCOME_GREEN);
+            main.setOpaque(true);
+        } else {
+            main.setBackground(Style.EXPENSE_RED);
+            main.setOpaque(true);
+        }
+
+        return main;
     }
-}
-
 }
