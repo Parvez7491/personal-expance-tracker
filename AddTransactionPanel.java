@@ -138,6 +138,11 @@ public class AddTransactionPanel {
         return mainPanel;
     }
     
+       public static void main(String[] args)
+{
+    
+}
+    
     private static void styleToggleButton(JButton btn, boolean isSelected) {
         btn.setFont(Style.NORMAL(16));
         btn.setFocusPainted(false);

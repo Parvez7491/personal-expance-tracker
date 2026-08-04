@@ -24,6 +24,7 @@ public class App_UI {
         cardPanel.add(homePanel(), "HOME");
         cardPanel.add(AddTransactionPanel.getPanel(cardLayout, cardPanel), "ADD_TX");
         cardPanel.add(editor.getUI(cardLayout, cardPanel), "Edit");
+        cardPanel.add(About_UI.getPanel(), "ABOUT");
 
         window.add(cardPanel, BorderLayout.CENTER);
         window.add(navbar(cardLayout, cardPanel), BorderLayout.SOUTH);
@@ -32,6 +33,7 @@ public class App_UI {
         window.setSize(450, 800);
         window.setLocationRelativeTo(null);
         window.setVisible(true);
+        
     }
 
     public static void refreshUI() {
@@ -39,6 +41,7 @@ public class App_UI {
         cardPanel.add(homePanel(), "HOME");
         cardPanel.add(AddTransactionPanel.getPanel(cardLayout, cardPanel), "ADD_TX");
         cardPanel.add(editor.getUI(cardLayout, cardPanel), "Edit");
+        cardPanel.add(About_UI.getPanel(), "ABOUT");
         cardPanel.revalidate();
         cardPanel.repaint();
     }
@@ -89,6 +92,7 @@ public class App_UI {
             btnNavAbout.setForeground(Color.black);
 
             cl.show(cp, "ADD_TX");
+
         });
 
         btnNavAbout.addActionListener(e -> {
@@ -103,6 +107,10 @@ public class App_UI {
             btnNavAdd.setBackground(Color.white);
             btnNavAdd.setOpaque(true);
             btnNavAdd.setForeground(Color.black);
+            
+            cl.show(cp, "ABOUT");
+
+
         });
 
         return navbar;
