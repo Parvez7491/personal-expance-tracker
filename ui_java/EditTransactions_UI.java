@@ -1,3 +1,6 @@
+package ui_java;
+import raw_java.*;
+
 import java.awt.*;
 import java.time.LocalDate;
 
@@ -32,13 +35,17 @@ public class EditTransactions_UI {
         amount.inputText.setText(String.format("%.2f", t.getAmount()));
 
         if (t.getClass().getSimpleName().equals("Income")) {
+            selectedType = "Income";
             btnIncome.setBackground(Style.GREEN);
             btnIncome.setForeground(Color.white);
-            selectedType = "Income";
+            btnExpense.setBackground(Color.white);
+            btnExpense.setForeground(Color.black);
         } else {
+            selectedType = "Expense";
+            btnIncome.setBackground(Color.white);
+            btnIncome.setForeground(Color.black);
             btnExpense.setBackground(Style.GREEN);
             btnExpense.setForeground(Color.white);
-            selectedType = "Expense";
         }
     }
 
@@ -98,7 +105,6 @@ public class EditTransactions_UI {
         });
 
         btnCancle.addActionListener(e -> {
-            App_UI.refreshUI();
             App_UI.switchToHome();
         });
 

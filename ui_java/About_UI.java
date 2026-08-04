@@ -1,3 +1,6 @@
+package ui_java;
+import raw_java.*;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
@@ -48,7 +51,7 @@ public class About_UI {
         descTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
         
         JTextArea descText = new JTextArea(
-            "Expense Tracker is a personal finance management application " +
+            "My Sphere is a personal finance management application " +
             "designed to help users monitor their income and expenses with ease. " +
             "It allows you to add, edit, and review transactions, providing a " +
             "clear overview of your financial balance at a glance. Built with " +

@@ -1,3 +1,6 @@
+package ui_java;
+import raw_java.*;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
@@ -64,7 +67,6 @@ public class Auth_UI {
         actionPanel.add(btnExit);
         actionPanel.add(btnLogin);
 
-        // "OR" Center Alignment Fix
         JPanel orPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         orPanel.setBackground(Style.OFF_WHITE);
         orPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
@@ -99,7 +101,6 @@ public class Auth_UI {
                 return;
             }
 
-            // authResult 0 নাম্বার ইনডেক্সে স্ট্যাটাস এবং 1 নাম্বারে Full Name রিটার্ন করবে
             String[] authResult = authenticateAndGetName(username, password);
             if (authResult[0].equals("-1")) {
                 errUser.setText("Username not found");
@@ -110,8 +111,8 @@ public class Auth_UI {
             } else {
                 // Login Success!
                 String fullName = authResult[1];
-                window.dispose(); // লগিন উইন্ডো বন্ধ করা
-                App_UI.startApp(username, fullName); // মেইন অ্যাপ ওপেন করা
+                window.dispose(); 
+                App_UI.startApp(username, fullName); 
             }
         });
 
@@ -128,7 +129,7 @@ public class Auth_UI {
         main.add(Box.createRigidArea(new Dimension(0, 30)));
         main.add(actionPanel);
         main.add(Box.createRigidArea(new Dimension(0, 5)));
-        main.add(orPanel); // Centered OR Label
+        main.add(orPanel); 
         main.add(Box.createRigidArea(new Dimension(0, 5)));
         main.add(btnCreate);
 
@@ -256,7 +257,6 @@ public class Auth_UI {
         return false;
     }
 
-    // নতুন মেথড: এটি Status এবং Full Name দুটোই রিটার্ন করে
     private static String[] authenticateAndGetName(String username, String password) {
         File file = new File(USERS_FILE);
         if (!file.exists()) return new String[]{"-1", ""}; // User not found
