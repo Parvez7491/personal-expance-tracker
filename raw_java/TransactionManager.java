@@ -1,18 +1,18 @@
+package raw_java;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class TransactionManager {
-    // ফাইলের নাম এখন আর নির্দিষ্ট (fixed) নেই, এটি ইউজারের নামের উপর নির্ভর করবে
     private String filename; 
     public double balance;
     public double income;
     public double spent;
     public List<Transaction> transactions = new ArrayList<>();
 
-    // কনস্ট্রাক্টরে username রিসিভ করে তার নামে ফাইল তৈরি করা হচ্ছে
     public TransactionManager(String username) {
-        this.filename = username + "_transactions.csv";
+        this.filename = "user_transaction\\" + username + "_transactions.csv";
         this.loadFromCSV();
         this.recalculateTotals();
     }

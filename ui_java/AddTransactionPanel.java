@@ -1,3 +1,6 @@
+package ui_java;
+import raw_java.*;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;

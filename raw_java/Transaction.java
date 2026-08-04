@@ -1,4 +1,6 @@
-abstract class Transaction implements Exportable {
+package raw_java;
+
+public abstract class Transaction implements Exportable {
     private String date;
     private String description;
     private double amount;
