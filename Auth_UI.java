@@ -99,7 +99,6 @@ public class Auth_UI {
                 return;
             }
 
-            // authResult 0 নাম্বার ইনডেক্সে স্ট্যাটাস এবং 1 নাম্বারে Full Name রিটার্ন করবে
             String[] authResult = authenticateAndGetName(username, password);
             if (authResult[0].equals("-1")) {
                 errUser.setText("Username not found");
@@ -110,8 +109,8 @@ public class Auth_UI {
             } else {
                 // Login Success!
                 String fullName = authResult[1];
-                window.dispose(); // লগিন উইন্ডো বন্ধ করা
-                App_UI.startApp(username, fullName); // মেইন অ্যাপ ওপেন করা
+                window.dispose();
+                App_UI.startApp(username, fullName);
             }
         });
 
