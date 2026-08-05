@@ -256,7 +256,6 @@ public class Auth_UI {
         return false;
     }
 
-    // নতুন মেথড: এটি Status এবং Full Name দুটোই রিটার্ন করে
     private static String[] authenticateAndGetName(String username, String password) {
         File file = new File(USERS_FILE);
         if (!file.exists()) return new String[]{"-1", ""}; // User not found

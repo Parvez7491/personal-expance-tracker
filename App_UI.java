@@ -1,13 +1,12 @@
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.time.LocalTime; // সময়ের জন্য নতুন ইম্পোর্ট
+import java.time.LocalTime;
 
 public class App_UI {
 
     public static TransactionManager tManager;
     
-    // বর্তমান ইউজারের ডেটা সংরক্ষণের জন্য ভেরিয়েবল
     public static String loggedInUsername = "";
     public static String loggedInFullName = "";
 
@@ -17,18 +16,14 @@ public class App_UI {
 
     public static JButton btnNavHome, btnNavAdd, btnNavAbout;
 
-    // মেইন মেথডটি এখন ব্যাকআপ হিসেবে কাজ করবে। 
-    // Auth_UI থেকে লগিন হলে startApp() মেথডটি কল হবে।
     public static void main(String[] args) {
         startApp("guest", "Guest User");
     }
 
-    // এই মেথডটি Auth_UI থেকে কল করা হবে
     public static void startApp(String username, String fullName) {
         loggedInUsername = username;
         loggedInFullName = fullName;
         
-        // ইউজারের নিজস্ব ডেটাবেস (CSV) লোড হবে
         tManager = new TransactionManager(username);
 
         cardLayout = new CardLayout();
@@ -169,21 +164,20 @@ public class App_UI {
         
         // Log out action
         btnLogout.addActionListener(e -> {
-            window.dispose(); // Close current App UI
-            Auth_UI.main(new String[]{}); // Open Login UI
+            window.dispose();
+            Auth_UI.main(new String[]{});
         });
 
         headerPanel.add(textPanel, BorderLayout.WEST);
         headerPanel.add(btnLogout, BorderLayout.EAST);
-        // ----------------------------------------------
 
         JLabel text_recent = new JLabel("Recent Transactions");
         text_recent.setFont(Style.NORMAL(24));
 
         main_panel.add(headerPanel);
-        main_panel.add(Box.createRigidArea(new Dimension(0, 20))); // Spacing
+        main_panel.add(Box.createRigidArea(new Dimension(0, 20)));
         main_panel.add(balanceSection());
-        main_panel.add(Box.createRigidArea(new Dimension(0, 20))); // Spacing
+        main_panel.add(Box.createRigidArea(new Dimension(0, 20)));
         main_panel.add(text_recent);
         main_panel.add(recentTransactions());
 
