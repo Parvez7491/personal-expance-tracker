@@ -11,7 +11,6 @@ import java.util.ArrayList;
 public class App_UI {
 
     public static TransactionManager tManager;
-
     public static String loggedInUsername = "";
     public static String loggedInFullName = "";
 
@@ -30,7 +29,6 @@ public class App_UI {
     public static void startApp(String username, String fullName) {
         loggedInUsername = username;
         loggedInFullName = fullName;
-
         tManager = new TransactionManager(username);
 
         cardLayout = new CardLayout();
