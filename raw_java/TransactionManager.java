@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TransactionManager {
-    private String filename; 
+    private String filename;
     public double balance;
     public double income;
     public double spent;
@@ -20,7 +20,7 @@ public class TransactionManager {
     public void add(Transaction t) {
         transactions.add(t);
         updateTotalsWith(t);
-        
+
         try (FileWriter writer = new FileWriter(this.filename, true)) {
             writer.write(t.generateCSV());
             writer.write(System.lineSeparator());
@@ -44,7 +44,7 @@ public class TransactionManager {
             rewriteCSV();
         }
     }
-    
+
     private void rewriteCSV() {
         try (FileWriter writer = new FileWriter(this.filename, false)) {
             for (Transaction t : transactions) {
@@ -80,19 +80,21 @@ public class TransactionManager {
 
     private void loadFromCSV() {
         File file = new File(filename);
-        if (!file.exists()) return;
+        if (!file.exists())
+            return;
 
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String raw;
             while ((raw = br.readLine()) != null) {
-                if (raw.trim().isEmpty()) continue;
-                
-                String[] fetch = raw.split(",");
-                if (fetch.length >= 4) { 
+                if (raw.trim().isEmpty())
+                    continue;
+
+                String[] fetch = devideData(raw);
+                if (fetch.length >= 4) {
                     String date = fetch[0];
                     String type = fetch[1];
-                    String description = fetch[2].replace("\"", ""); 
-                    double amount = Double.parseDouble(fetch[3]);    
+                    String description = fetch[2].replace("\"", "");
+                    double amount = Double.parseDouble(fetch[3]);
 
                     if (type.equals("Expense")) {
                         transactions.add(new Expense(date, description, amount));
@@ -104,5 +106,31 @@ public class TransactionManager {
         } catch (IOException | NumberFormatException e) {
             System.out.println("Failed to read: " + e.getMessage());
         }
+    }
+
+    private String[] devideData(String raw) {
+        String[] result = new String[4];
+        for (int i = 0; i < 4; i++) {
+            result[i] = "";
+        }
+        int len = raw.length();
+        boolean in_quote = false;
+
+        for (int i = 0, j = 0; i < len; i++) {
+            if (raw.charAt(i) == '\"') {
+                in_quote = in_quote ? false : true;
+                continue;
+            }
+            if (raw.charAt(i) == ',' && !in_quote) {
+                j++;
+                continue;
+            }
+
+            result[j] += raw.charAt(i);
+
+        }
+
+        return result;
+
     }
 }
