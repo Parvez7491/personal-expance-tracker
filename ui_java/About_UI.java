@@ -94,21 +94,21 @@ public class About_UI {
         // our infos
         devSection.add(developerCard(
             "Md Parvez Mosharraf Bhuiyan",
-            "213.png",
+            "image/Parvez.png",
             "https://github.com/Parvez7491"
         ));
         devSection.add(Box.createVerticalStrut(10));
         
         devSection.add(developerCard(
             "Rejoan Hasan Mugdho",
-            "41826.png",
+            "image/mugdho.png",
             "https://github.com/rhmugdho5"
         ));
         devSection.add(Box.createVerticalStrut(10));
         
         devSection.add(developerCard(
             "Tanzim Mohammad Enayetullah",
-            "IMG_20260226_230737.jpg",
+            "image/Tanzim.jpg",
             "https://github.com/suptanzim"
         ));
         
